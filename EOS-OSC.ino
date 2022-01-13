@@ -46,7 +46,7 @@ bool timeoutPingSent = false;
 #define PING_AFTER_IDLE_INTERVAL    2500
 #define TIMEOUT_AFTER_IDLE_INTERVAL 5000
 
-enum WHEEL_TYPE { TILT, PAN, LEVEL};
+enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE};
 enum WHEEL_MODE { COARSE, FINE };
 
 struct Encoder
@@ -57,6 +57,13 @@ struct Encoder
   int pinBPrevious;
   float pos;
   uint8_t direction;
+
+  uint8_t btnPin;
+  bool btnPrevious;
+  bool btnCurState;
+  bool fine;
+
+
 };
 
 struct Encoder panWheel;
@@ -86,18 +93,25 @@ void parseOSCMessage(String& msg)
 }
 
 
-void initEncoder(struct Encoder* encoder, uint8_t pinA, uint8_t pinB, uint8_t direction)
+void initEncoder(struct Encoder* encoder, uint8_t pinA, uint8_t pinB, uint8_t direction, uint8_t btnPin = 0)
 {
   encoder->pinA = pinA;
   encoder->pinB = pinB;
   encoder->pos = 0;
   encoder->direction = direction;
 
+
+  encoder->btnPin = btnPin;
+
   pinMode(pinA, INPUT_PULLUP);
   pinMode(pinB, INPUT_PULLUP);
 
   encoder->pinAPrevious = digitalRead(pinA);
   encoder->pinBPrevious = digitalRead(pinB);
+  if (btnPin != 0)
+  {
+    encoder->btnPrevious = digitalRead(btnPin);
+  }
 }
 
 int8_t updateEncoder(struct Encoder* encoder)
@@ -122,6 +136,25 @@ int8_t updateEncoder(struct Encoder* encoder)
   return encoderMotion;
 }
 
+bool updateButton(struct Encoder* encoder)
+{
+  int current = digitalRead(encoder->btnPin);
+
+  if(encoder->btnPin != current)
+  {
+    if(current == 1)
+    {
+      return true;  
+    }  
+    else
+    {
+      return false;
+    }
+  }
+  
+}
+
+
 void sendOscMessage(const String &address, float value)
 {
   OSCMessage msg(address.c_str());
@@ -131,44 +164,56 @@ void sendOscMessage(const String &address, float value)
   SLIPSerial.endPacket();
 }
 
-void sendEosWheelMove(WHEEL_TYPE type, float ticks)
+
+void sendWheelMove(WHEEL_TYPE type, float ticks, int fine = 3 )
 {
   String wheelMsg("/eos/wheel");
-  if (type == PAN || type == TILT)
+  if (type != LEVEL && fine != 3)
   {
-    /*
-    if (digitalRead(SHIFT_BTN) == LOW)
+    if (fine == 0)
       wheelMsg.concat("/fine");
-    else
+    else if (fine == 1)
       wheelMsg.concat("/coarse");
-      */
+
   }
 
+  switch (type)
+  {
+    case PAN:
+      wheelMsg.concat("/pan");
+      break;
+      
+    case TILT:
+      wheelMsg.concat("/tilt");
+      break;
+      
+    case LEVEL:
+      wheelMsg.concat("/level");
+      break;
+      
+    case RED:
+      wheelMsg.concat("/red");
+      break;
+      
+    case GREEN:
+      wheelMsg.concat("/green");
+      break;
+      
+    case BLUE:
+      wheelMsg.concat("/blue");
+      break;
+      
+    default:
+      return;
+      break;
+  }
 
-  if (type == PAN)
-    wheelMsg.concat("/coarse/pan");
-  else if (type == TILT)
-    wheelMsg.concat("/coarse/tilt");
-  else if (type == LEVEL)
-    wheelMsg.concat("/level");
-  else
-    // something has gone very wrong
-    return;
 
   sendOscMessage(wheelMsg, ticks);
 }
 
 
 
-void sendWheelMove(WHEEL_TYPE type, float ticks)
-{
-  switch (connectedToConsole)
-  {
-    default:
-    case ConsoleEos:
-      sendEosWheelMove(type, ticks);
-  }
-}
 
 void setup() {
   SLIPSerial.begin(115200);
@@ -180,8 +225,8 @@ void setup() {
   while (!Serial);
 #endif
 
-  initEncoder(&panWheel, A0, A1, PAN_DIR);
-  initEncoder(&tiltWheel, A2, A3, TILT_DIR);
+  initEncoder(&panWheel, A0, A1, PAN_DIR, 2);
+  initEncoder(&tiltWheel, A2, A3, TILT_DIR, 3);
   initEncoder(&levelWheel, A4, A5, LEVEL_DIR);
 
 
@@ -192,8 +237,11 @@ void loop() {
   int size;
   // get the updated state of each encoder
   int32_t panMotion = updateEncoder(&panWheel);
+  bool panFine = updateButton(&panWheel);
   int32_t tiltMotion = updateEncoder(&tiltWheel);
+  bool tiltFine = updateButton(&tiltWheel);
   int32_t levelMotion = updateEncoder(&levelWheel);
+  
 
   // Scale the result by a scaling factor
   panMotion *= PAN_SCALE;
@@ -201,10 +249,10 @@ void loop() {
   levelMotion *= LEVEL_SCALE;
 
   if (tiltMotion != 0)
-    sendWheelMove(TILT, tiltMotion);
+    sendWheelMove(TILT, tiltMotion, tiltFine);
 
   if (panMotion != 0)
-    sendWheelMove(PAN, panMotion);
+    sendWheelMove(PAN, panMotion, panFine);
 
   if (levelMotion != 0)
     sendWheelMove(LEVEL, levelMotion);
@@ -216,6 +264,7 @@ void loop() {
     while (size--)
       curMsg += (char)(SLIPSerial.read());
   }
+  
   if (SLIPSerial.endofPacket())
   {
     parseOSCMessage(curMsg);
@@ -225,6 +274,7 @@ void loop() {
     timeoutPingSent = false;
     curMsg = String();
   }
+  
   if (lastMessageRxTime > 0)
   {
     unsigned long diff = millis() - lastMessageRxTime;
