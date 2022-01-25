@@ -14,7 +14,7 @@ public:
 	OLED(int sdaPin, int sclPin);
 	void displaySplash();
 private:
-	OBDISP display; 
+	OBDISP disp; 
 
   
 
