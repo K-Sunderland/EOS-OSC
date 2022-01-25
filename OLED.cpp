@@ -5,7 +5,17 @@ OLED::OLED(int sdaPin, int sclPin)
 
 
   obdI2CInit(&disp, OLED_128x64, -1, 0,0,0, sdaPin,sclPin,-1,400000L);
+  obdFill(&disp, 0, 1);
+  
 }
+
+OBDISP * OLED::getDisplay()
+{
+
+  return &disp;
+}
+ 
+
 
 void OLED::displaySplash()
 {
