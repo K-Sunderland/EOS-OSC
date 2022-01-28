@@ -10,6 +10,7 @@ void OLED::initOled(int sdaPin)
 
 void OLED::displaySplash(uint8_t * img)
 {
-
-	obdLoadBMP(&disp, img, 0, 0, 1);
+  obdFill(&disp, 0, 1);
+  
 }
+
