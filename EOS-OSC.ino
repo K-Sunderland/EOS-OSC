@@ -3,18 +3,17 @@
 #include "Encoder.h"
 #include "OSCMain.cpp"
 
-<<<<<<< HEAD
+
 
 enum class State {Initialize, Run, Switch, Update};
 
-OLED displays[5];
-int sdaPins[] = {25,26,27,22,23};
+OLED displays[6];
+int sdaPins[] = {22,23,24,25,26,27};
 
 
  
 
 const uint8_t etcSplash[] PROGMEM = {
->>>>>>> 340b5eea476f80be97a7f6313c1a139405a59753
       0x42,0x4d,0x40,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x3e,0x00,0x00,0x00,0x28,0x00,
       0x00,0x00,0x80,0x00,0x00,0x00,0x40,0x00,0x00,0x00,0x01,0x00,0x01,0x00,0x00,0x00,
       0x00,0x00,0x02,0x04,0x00,0x00,0x12,0x0b,0x00,0x00,0x12,0x0b,0x00,0x00,0x00,0x00,
@@ -87,18 +86,20 @@ const uint8_t etcSplash[] PROGMEM = {
 
 void setup()
 {
-  for(uint8_t i = 0; i < sizeof(displays); i++)
+  for(uint8_t i =0; i <6; i++)
   {
-    displays[i].initOled(sdaPins[i]);  
+    displays[i].initOled(sdaPins[i]);
   }
-    
+
 }
 
 void loop()
 {
 
-
 displays[0].displaySplash((uint8_t *)etcSplash);
-
-                                    
+displays[1].displaySplash((uint8_t *)etcSplash);
+displays[2].displaySplash((uint8_t *)etcSplash);
+displays[3].displaySplash((uint8_t *)etcSplash);          
+displays[4].displaySplash((uint8_t *)etcSplash);            
+displays[5].displaySplash((uint8_t *)etcSplash);            
 }
