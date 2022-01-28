@@ -12,8 +12,8 @@ public:
 
 void initOled(int sdaPin);
 void displaySplash(uint8_t * img);
-void displayText(string text);
-
+void displayText(char * text);
+void clearDisplay();
 private:
 	OBDISP disp; 
   int sclPin = 21;

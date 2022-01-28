@@ -8,8 +8,10 @@
 enum class State {Initialize, Run, Switch, Update};
 
 OLED displays[6];
-int sdaPins[] = {22,23,24,25,26,27};
+Encoder test;
 
+int sdaPins[] = {22,23,24,25,26,27};
+int val = 0;
 
  
 
@@ -90,16 +92,14 @@ void setup()
   {
     displays[i].initOled(sdaPins[i]);
   }
-
+  test.initEncoder(PAN, 30,31, FORWARD, 32);
 }
 
 void loop()
 {
-
-displays[0].displaySplash((uint8_t *)etcSplash);
-displays[1].displaySplash((uint8_t *)etcSplash);
-displays[2].displaySplash((uint8_t *)etcSplash);
-displays[3].displaySplash((uint8_t *)etcSplash);          
-displays[4].displaySplash((uint8_t *)etcSplash);            
-displays[5].displaySplash((uint8_t *)etcSplash);            
+if(test.updateEncoder() != 0)
+{
+  displays[0].displayText((char*)"Hello");
+  displays[0].clearDisplay;
+}
 }

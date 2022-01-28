@@ -14,7 +14,12 @@ void OLED::displaySplash(uint8_t * img)
   
 }
 
-void OLED::displayText(string text)
+void OLED::displayText(char * text)
 {
-  obdWriteString(&disp, int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);  
+   obdWriteString(&disp, 0,8,3,text, FONT_16x16, 0, 1);
+}
+
+void OLED::clearDisplay()
+{
+  obdFill(&disp, 0,1);  
 }

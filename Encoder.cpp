@@ -1,9 +1,6 @@
 #include "Encoder.h"
 
-Encoder::Encoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin)
-{
-  
-}
+
 
 int8_t Encoder::updateButton()
 {
@@ -12,7 +9,27 @@ int8_t Encoder::updateButton()
 }
 
 
+void Encoder::initEncoder(WHEEL_TYPE type, uint8_t pinA, uint8_t pinB, uint8_t direction, uint8_t btnPin = 0)
+{
+  pinA = pinA;
+  pinB = pinB;
+  pos = 0;
+  direction = direction;
 
+
+  btnPin = btnPin;
+
+  pinMode(pinA, INPUT_PULLUP);
+  pinMode(pinB, INPUT_PULLUP);
+
+  pinAPrevious = digitalRead(pinA);
+  pinBPrevious = digitalRead(pinB);
+  if (btnPin != 0)
+  {
+    btnPin = btnPin
+    btnPrevious = digitalRead(btnPin);
+  }
+}
 
 int8_t Encoder::updateEncoder()
 {
