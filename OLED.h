@@ -6,16 +6,15 @@
 #pragma once
 
 
-
-
 class OLED 
 {
 public:
-	OLED(int sdaPin, int sclPin);
-	void displaySplash();
+	void initOled(int sdaPin);
+	void displaySplash(uint8_t * img);
 private:
 	OBDISP disp; 
-
+  int sclPin = 21;
+  
   
 
 };
