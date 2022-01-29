@@ -12,7 +12,7 @@ enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE};
 class Encoder
 {
 public:
-    Encoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin = -1);
+    void initEncoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin = 0);
     int8_t updateEncoder();
     int8_t updateButton();
 private:

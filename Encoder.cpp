@@ -9,7 +9,7 @@ int8_t Encoder::updateButton()
 }
 
 
-void Encoder::initEncoder(WHEEL_TYPE type, uint8_t pinA, uint8_t pinB, uint8_t direction, uint8_t btnPin = 0)
+void Encoder::initEncoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin = 0)
 {
   pinA = pinA;
   pinB = pinB;
@@ -26,7 +26,7 @@ void Encoder::initEncoder(WHEEL_TYPE type, uint8_t pinA, uint8_t pinB, uint8_t d
   pinBPrevious = digitalRead(pinB);
   if (btnPin != 0)
   {
-    btnPin = btnPin
+    btnPin = btnPin;
     btnPrevious = digitalRead(btnPin);
   }
 }

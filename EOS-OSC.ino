@@ -2,7 +2,7 @@
 #include "OLED.h"
 #include "Encoder.h"
 #include "OSCMain.cpp"
-
+#include <string.h>
 
 
 enum class State {Initialize, Run, Switch, Update};
@@ -13,7 +13,11 @@ Encoder test;
 int sdaPins[] = {22,23,24,25,26,27};
 int val = 0;
 
- 
+String displayText = "Value is: ";
+
+char charBuf[50];
+
+
 
 const uint8_t etcSplash[] PROGMEM = {
       0x42,0x4d,0x40,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x3e,0x00,0x00,0x00,0x28,0x00,
@@ -92,14 +96,22 @@ void setup()
   {
     displays[i].initOled(sdaPins[i]);
   }
-  test.initEncoder(PAN, 30,31, FORWARD, 32);
+
+test.initEncoder(30, 31, FORWARD , TILT, 32);
 }
 
 void loop()
 {
+Serial.begin(9600);
+Serial.print(test.updateButton());
+Serial.end();
+
 if(test.updateEncoder() != 0)
 {
-  displays[0].displayText((char*)"Hello");
-  displays[0].clearDisplay;
+displays[0].displayText(charBuf);
+val++;
+displayText += val;
+displayText.toCharArray(charBuf, 50);
+
 }
 }
