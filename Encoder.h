@@ -5,7 +5,7 @@
 #define REVERSE             1
 
 
-enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE};
+enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE, ZOOM};
 
 
 

@@ -1,7 +1,7 @@
 #include <OneBitDisplay.h>
 #include "OLED.h"
 #include "Encoder.h"
-#include "OSCMain.cpp"
+#include "OSC.h"
 #include <string.h>
 
 
@@ -95,11 +95,12 @@ void setup()
   for(uint8_t i =0; i <6; i++)
   {
     displays[i].initOled(sdaPins[i]);
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], FORWARD , TILT, 32);
   }
 
   for(uint8_t i=0; i<6; i++)
   {
-    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], FORWARD , TILT, 32);
+
     
   }
 
@@ -110,15 +111,11 @@ void setup()
 
 void loop()
 {
-int8_t encoderOneMotion = encoders[0].updateEncoder();
-int8_t encoderTwoMotion = encoders[1].updateEncoder();
-if (encoderOneMotion != 0 || encoderTwoMotion != 0)
+
+for(Encoder i : encoders)
 {
-  Serial.begin(9600);
-  Serial.println(encoderOneMotion);
-  Serial.println(encoderTwoMotion);
-  Serial.end();
+  i.updateEncoder();
 }
 
-
+checkOSC();
 }
