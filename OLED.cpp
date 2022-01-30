@@ -23,3 +23,13 @@ void OLED::clearDisplay()
 {
   obdFill(&disp, 0,1);  
 }
+
+char * convertToChar(int32_t input)
+{
+String displayText = "";
+char charBuf[50];
+displayText += input;
+displayText.toCharArray(charBuf, 50);
+
+return charBuf;
+}

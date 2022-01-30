@@ -8,14 +8,13 @@
 enum class State {Initialize, Run, Switch, Update};
 
 OLED displays[6];
-Encoder test;
+Encoder encoders[6];
+int val = 0; 
 
 int sdaPins[] = {22,23,24,25,26,27};
-int val = 0;
+int encoderAPins[] = {30,32,34,36,38,40};
+int encoderBPins[] = {31,33,35,37,39,41};
 
-String displayText = "Value is: ";
-
-char charBuf[50];
 
 
 
@@ -92,26 +91,34 @@ const uint8_t etcSplash[] PROGMEM = {
 
 void setup()
 {
+  
   for(uint8_t i =0; i <6; i++)
   {
     displays[i].initOled(sdaPins[i]);
   }
 
-test.initEncoder(30, 31, FORWARD , TILT, 32);
+  for(uint8_t i=0; i<6; i++)
+  {
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], FORWARD , TILT, 32);
+    
+  }
+
+
 }
+
+
 
 void loop()
 {
-Serial.begin(9600);
-Serial.print(test.updateButton());
-Serial.end();
-
-if(test.updateEncoder() != 0)
+int8_t encoderOneMotion = encoders[0].updateEncoder();
+int8_t encoderTwoMotion = encoders[1].updateEncoder();
+if (encoderOneMotion != 0 || encoderTwoMotion != 0)
 {
-displays[0].displayText(charBuf);
-val++;
-displayText += val;
-displayText.toCharArray(charBuf, 50);
-
+  Serial.begin(9600);
+  Serial.println(encoderOneMotion);
+  Serial.println(encoderTwoMotion);
+  Serial.end();
 }
+
+
 }

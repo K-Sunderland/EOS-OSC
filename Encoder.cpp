@@ -9,15 +9,15 @@ int8_t Encoder::updateButton()
 }
 
 
-void Encoder::initEncoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin = 0)
+void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t udirection, WHEEL_TYPE utype, uint8_t ubtnPin = 0)
 {
-  pinA = pinA;
-  pinB = pinB;
+  pinA = upinA;
+  pinB = upinB;
   pos = 0;
-  direction = direction;
+  direction = udirection;
+  type = utype;
 
-
-  btnPin = btnPin;
+  btnPin = ubtnPin;
 
   pinMode(pinA, INPUT_PULLUP);
   pinMode(pinB, INPUT_PULLUP);
@@ -40,6 +40,7 @@ int8_t Encoder::updateEncoder()
     // has the encoder moved at all?
     if (pinAPrevious != pinACurrent)
     {
+      
         // Since it has moved, we must determine if the encoder has moved forwards or backwards
         encoderMotion = (pinAPrevious == pinBPrevious) ? -1 : 1;
 
@@ -49,6 +50,5 @@ int8_t Encoder::updateEncoder()
     }
     pinAPrevious = pinACurrent;
     pinBPrevious = pinBCurrent;
-
     return encoderMotion;
 }
