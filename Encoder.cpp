@@ -1,7 +1,6 @@
 #include "Encoder.h"
 
 
-
 int8_t Encoder::updateButton()
 {
 

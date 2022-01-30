@@ -1,11 +1,11 @@
-#pragma once
+
+#include "OSC.h"
 #include <Arduino.h>
+
 
 #define FORWARD             0
 #define REVERSE             1
 
-
-enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE, ZOOM};
 
 
 

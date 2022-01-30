@@ -1,4 +1,5 @@
 #include <OneBitDisplay.h>
+#include "definitions.h"
 #include "OLED.h"
 #include "Encoder.h"
 #include "OSC.h"

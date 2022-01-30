@@ -32,7 +32,6 @@ bool timeoutPingSent = false;
 #define TIMEOUT_AFTER_IDLE_INTERVAL 5000
 
 
-
 enum ConsoleType
 {
   ConsoleNone,

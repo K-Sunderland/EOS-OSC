@@ -1,6 +1,7 @@
+#include "definitions.h"
 #include <Arduino.h>
 #include <string.h>
-#include "Encoder.h"
+
 
 
 
