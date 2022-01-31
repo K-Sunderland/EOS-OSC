@@ -1,4 +1,4 @@
-#include "definitions.h"
+#include "encoder.h"
 #include <Arduino.h>
 #include <string.h>
 
@@ -6,6 +6,8 @@
 
 
 void initSerial();
+
+void initOSC();
 
 void parseOSCMessage(String& msg);
 

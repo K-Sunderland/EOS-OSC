@@ -21,7 +21,7 @@ SLIPEncodedSerial SLIPSerial(Serial);
 #define REVERSE             1
 
 
-#define BOX_NAME_STRING     "box1"
+#define BOX_NAME_STRING     "facepanel"
 
 const String HANDSHAKE_QUERY = "ETCOSC?";
 const String HANDSHAKE_REPLY = "OK";
@@ -46,6 +46,7 @@ ConsoleType connectedToConsole = ConsoleEos;
 void initSerial()
 {
     SLIPSerial.begin(115200);  
+
 
 
 }

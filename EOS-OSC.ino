@@ -1,5 +1,4 @@
 #include <OneBitDisplay.h>
-#include "definitions.h"
 #include "OLED.h"
 #include "Encoder.h"
 #include "OSC.h"
@@ -92,19 +91,20 @@ const uint8_t etcSplash[] PROGMEM = {
 
 void setup()
 {
-  
+  initSerial();
+    // This is a hack around an Arduino bug. It was taken from the OSC library
+  //examples
+#ifdef BOARD_HAS_USB_SERIAL
+  while (!SerialUSB);
+#else
+  while (!Serial);
+#endif
+
   for(uint8_t i =0; i <6; i++)
   {
     displays[i].initOled(sdaPins[i]);
     encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], FORWARD , TILT, 32);
   }
-
-  for(uint8_t i=0; i<6; i++)
-  {
-
-    
-  }
-
 
 }
 
@@ -113,10 +113,7 @@ void setup()
 void loop()
 {
 
-for(Encoder i : encoders)
-{
-  i.updateEncoder();
-}
+encoders[0].updateEncoder();
 
 checkOSC();
 }

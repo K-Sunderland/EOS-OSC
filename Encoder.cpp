@@ -1,11 +1,7 @@
 #include "Encoder.h"
+#include "OSC.h"
 
 
-int8_t Encoder::updateButton()
-{
-
-    return digitalRead(btnPin);
-}
 
 
 void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t udirection, WHEEL_TYPE utype, uint8_t ubtnPin = 0)
@@ -29,8 +25,7 @@ void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t udirection, WHEE
     btnPrevious = digitalRead(btnPin);
   }
 }
-
-int8_t Encoder::updateEncoder()
+void Encoder::updateEncoder()
 {
     int8_t encoderMotion = 0;
     int pinACurrent = digitalRead(pinA); 
@@ -49,5 +44,10 @@ int8_t Encoder::updateEncoder()
     }
     pinAPrevious = pinACurrent;
     pinBPrevious = pinBCurrent;
-    return encoderMotion;
+
+  if(encoderMotion != 0)
+  {
+     sendWheelMove(type, encoderMotion);     
+  }
+  
 }
