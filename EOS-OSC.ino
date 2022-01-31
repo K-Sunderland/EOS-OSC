@@ -4,12 +4,14 @@
 #include "OSC.h"
 #include <string.h>
 
-
+#define PAGE_NUM  2
 enum class State {Initialize, Run, Switch, Update};
 
 OLED displays[6];
 Encoder encoders[6];
 int val = 0; 
+
+
 
 int sdaPins[] = {22,23,24,25,26,27};
 int encoderAPins[] = {30,32,34,36,38,40};

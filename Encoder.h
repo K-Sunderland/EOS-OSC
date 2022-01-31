@@ -1,11 +1,12 @@
+#pragma once 
 #include <Arduino.h>
 
 
 #define FORWARD             0
 #define REVERSE             1
 
-#ifndef ENCODER_H
-#define ENCODER_H 
+//#ifndef ENCODER_H
+//#define ENCODER_H 
 
 
  enum WHEEL_TYPE { TILT, PAN, LEVEL, RED, GREEN, BLUE, ZOOM};
@@ -42,4 +43,4 @@ private:
  
 
 };
-#endif
+//#endif

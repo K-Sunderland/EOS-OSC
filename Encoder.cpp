@@ -2,8 +2,6 @@
 #include "OSC.h"
 
 
-
-
 void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t ubtnPin, uint8_t udirection, WHEEL_TYPE utype, uint8_t uscale)
 {
   pinA = upinA;
