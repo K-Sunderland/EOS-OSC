@@ -14,6 +14,10 @@ int val = 0;
 int sdaPins[] = {22,23,24,25,26,27};
 int encoderAPins[] = {30,32,34,36,38,40};
 int encoderBPins[] = {31,33,35,37,39,41};
+int btnPins[] = {42,43,44,45,46,-1};
+WHEEL_TYPE types[] = {PAN, TILT, ZOOM, RED, GREEN, BLUE};
+int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
+int scales[] = {10, 10, 10, 3,3,3};
 
 
 
@@ -103,7 +107,8 @@ void setup()
   for(uint8_t i =0; i <6; i++)
   {
     displays[i].initOled(sdaPins[i]);
-    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], FORWARD , TILT, 32);
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], types[i], scales[i]);
+
   }
 
 }
@@ -112,8 +117,8 @@ void setup()
 
 void loop()
 {
-
-encoders[0].updateEncoder();
+for(auto& enc : encoders)
+  enc.updateEncoder();
 
 checkOSC();
 }

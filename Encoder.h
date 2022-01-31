@@ -18,7 +18,7 @@ class Encoder
 {
   
 public:
-    void initEncoder(uint8_t pinA, uint8_t pinB, uint8_t direction, WHEEL_TYPE, uint8_t btnPin = 0);
+    void initEncoder(uint8_t upinA, uint8_t upinB, uint8_t ubtnPin, uint8_t udirection, WHEEL_TYPE utype, uint8_t uscale);
     void updateEncoder();
 
 
@@ -26,14 +26,14 @@ private:
     WHEEL_TYPE type; 
     uint8_t direction;
     uint8_t btnPin;
-
+    uint8_t scale;
 
     uint8_t pinA;
     uint8_t pinB;
     
     int pinAPrevious;
     int pinBPrevious;
-    float pos;
+
     
     bool btnPrevious;
     bool btnCurState;

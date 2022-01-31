@@ -4,12 +4,12 @@
 
 
 
-void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t udirection, WHEEL_TYPE utype, uint8_t ubtnPin = 0)
+void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t ubtnPin, uint8_t udirection, WHEEL_TYPE utype, uint8_t uscale)
 {
   pinA = upinA;
   pinB = upinB;
-  pos = 0;
   direction = udirection;
+  scale = uscale;
   type = utype;
 
   btnPin = ubtnPin;
@@ -19,12 +19,13 @@ void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t udirection, WHEE
 
   pinAPrevious = digitalRead(pinA);
   pinBPrevious = digitalRead(pinB);
-  if (btnPin != 0)
+  if (btnPin != -1)
   {
     btnPin = btnPin;
     btnPrevious = digitalRead(btnPin);
   }
 }
+
 void Encoder::updateEncoder()
 {
     int8_t encoderMotion = 0;
@@ -45,6 +46,7 @@ void Encoder::updateEncoder()
     pinAPrevious = pinACurrent;
     pinBPrevious = pinBCurrent;
 
+  encoderMotion *= scale; 
   if(encoderMotion != 0)
   {
      sendWheelMove(type, encoderMotion);     
