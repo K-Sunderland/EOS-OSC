@@ -19,12 +19,13 @@ void Encoder::initEncoder(uint8_t upinA, uint8_t upinB, uint8_t ubtnPin, uint8_t
   pinBPrevious = digitalRead(pinB);
   if (btnPin != -1)
   {
-    btnPin = btnPin;
+    pinMode(btnPin, INPUT_PULLUP);
+    btnPin = ubtnPin;
     btnPrevious = digitalRead(btnPin);
   }
 }
 
-void Encoder::updateEncoder()
+int8_t Encoder::updateEncoder()
 {
     int8_t encoderMotion = 0;
     int pinACurrent = digitalRead(pinA); 
@@ -45,9 +46,45 @@ void Encoder::updateEncoder()
     pinBPrevious = pinBCurrent;
 
   encoderMotion *= scale; 
-  if(encoderMotion != 0)
-  {
-     sendWheelMove(type, encoderMotion);     
-  }
-  
+    if(type != SELECTOR)
+    {
+      if(encoderMotion != 0)
+      {
+         sendWheelMove(type, encoderMotion);     
+         return 0;
+      }
+    }
+    else
+    {
+
+      return encoderMotion;
+    }
+    }
+    
+WHEEL_TYPE Encoder::getType()
+{
+  return type;  
+}
+
+bool Encoder::updateSelector()
+{
+    bool state;
+    btnCurState = digitalRead(btnPin);
+
+    if(btnCurState != btnPrevious && btnCurState == 1)
+    {
+    state = true; 
+
+    }
+    else
+    {
+    state = false;  
+    }
+    btnPrevious = btnCurState;
+    return state;
+}
+
+void Encoder::changeType(WHEEL_TYPE newType)
+{
+    type = newType;
 }

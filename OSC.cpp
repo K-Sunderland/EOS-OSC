@@ -1,5 +1,4 @@
 #include "OSC.h";
-
 #include <OSCBoards.h>
 #include <OSCBundle.h>
 #include <OSCData.h>
@@ -20,6 +19,9 @@ SLIPEncodedSerial SLIPSerial(Serial);
 #define FORWARD             0
 #define REVERSE             1
 
+ConsoleType connectedToConsole = ConsoleEos;
+bool connected = false;
+
 
 #define BOX_NAME_STRING     "facepanel"
 
@@ -32,13 +34,6 @@ bool timeoutPingSent = false;
 #define TIMEOUT_AFTER_IDLE_INTERVAL 5000
 
 
-enum ConsoleType
-{
-  ConsoleNone,
-  ConsoleEos
-};
-
-ConsoleType connectedToConsole = ConsoleEos;
 
 
 
@@ -59,7 +54,10 @@ void parseOSCMessage(String& msg)
     SLIPSerial.beginPacket();
     SLIPSerial.write((const uint8_t*)HANDSHAKE_REPLY.c_str(), (size_t)HANDSHAKE_REPLY.length());
     SLIPSerial.endPacket();
+    connected = true;
+    connectedToConsole = ConsoleEos;
   }
+ 
 
 }
 

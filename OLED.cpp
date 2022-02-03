@@ -14,9 +14,9 @@ void OLED::displaySplash(uint8_t * img)
   
 }
 
-void OLED::displayText(char * text)
+void OLED::displayText(char * text, int x, int y)
 {
-   obdWriteString(&disp, 0,8,3,text, FONT_8x8, 0, 1);
+   obdWriteString(&disp, 0,x,y,text, FONT_8x8, 0, 1);
 }
 
 void OLED::clearDisplay()
@@ -24,7 +24,13 @@ void OLED::clearDisplay()
   obdFill(&disp, 0,1);  
 }
 
-char * convertToChar(int32_t input)
+
+void OLED::power(bool state)
+{
+obdPower(&disp, state);  
+  
+}
+char * convertToChar(int input)
 {
 String displayText = "";
 char charBuf[50];
