@@ -8,28 +8,28 @@
 enum class State {Splash, Run, Switch, Update};
 
 OLED displays[6];
-Encoder encoders[6];
+Encoder encoders[7];
 int val = 0;
 
 
-WHEEL_TYPE type[PAGE_NUM][6] =
+WHEEL_TYPE type[PAGE_NUM][7] =
 {
-  {SELECTOR, RED, GREEN, BLUE, WHITE, LEVEL},
-  {SELECTOR, TILT, ZOOM, PAN, BLUE, LEVEL}
+  {SELECTOR, RED, GREEN, BLUE, WHITE, AMBER, LEVEL},
+  {SELECTOR, TILT, ZOOM, PAN, BLUE, BLUE, LEVEL}
 };
 
-char *typeText[PAGE_NUM][6] =
+char *typeText[PAGE_NUM][7] =
 {
-  {(char *)"", (char *)"Red    ", (char *)"Green   ", (char *)"Blue    ", (char *)"White      ", (char *)"           "},  
-  {(char *)"", (char *)"Tilt   ", (char *)"Zoom    ", (char *)"Pan     ", (char *)"           ", (char *)"           "}
+  {(char *)"", (char *)"Red    ", (char *)"Green   ", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},  
+  {(char *)"", (char *)"Tilt   ", (char *)"Zoom    ", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "}
 };
 
 int sdaPins[] = {22, 23, 24, 25, 26, 27};
-int encoderAPins[] = {30, 32, 34, 36, 38, 40};
-int encoderBPins[] = {31, 33, 35, 37, 39, 41};
-int btnPins[] = {42, 43, 44, 45, 46, -1};
-int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
-int scales[] = {1, 10, 10, 3, 3, 3};
+int encoderAPins[] = {30, 32, 34, 36, 38, 40, 42};
+int encoderBPins[] = {31, 33, 35, 37, 39, 41, 43};
+int btnPins[] = {44, 45, 46, 47, 48, -1};
+int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
+int scales[] = {1, 10, 10, 3, 3, 3, 3};
 int curPage = 1;
 bool oledChanges = true;
 

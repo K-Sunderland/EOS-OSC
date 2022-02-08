@@ -56,7 +56,12 @@ int8_t Encoder::updateEncoder()
     }
     else
     {
-
+      if(encoderMotion!=0)
+      {
+      Serial.begin(9600);
+      Serial.println(encoderMotion);
+      Serial.end();
+      }
       return encoderMotion;
     }
     }
