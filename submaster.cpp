@@ -19,7 +19,11 @@ void Sub::updateSub()
     
   if(EMA_S != previousValue)
   {
+    
      sendSubLevel(1, EMA_S/100);  
+     Serial.begin(9600);
+     Serial.println(EMA_S/10);
+     Serial.end();
   }
 
   previousValue = EMA_S;

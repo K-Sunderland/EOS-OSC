@@ -25,9 +25,9 @@ WHEEL_TYPE type[PAGE_NUM][7] =
 
 char *typeText[PAGE_NUM][7] =
 {
-  {(char *)"", (char *)"Red    ", (char *)"Green   ", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},
-  {(char *)"", (char *)"Tilt   ", (char *)"Zoom    ", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "},
-  (char *)"", (char *)"Hello   ", (char *)"Poop    ", (char *)"Gay     ", (char *)"Blue       ", (char *)"           "
+  {(char *)"", (char *)"Red    ", (char *)"Green", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},
+  {(char *)"", (char *)"Tilt   ", (char *)"Zoom", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "},
+  (char *)"", (char *)"Hello   ", (char *)"Purple    ", (char *)"Red     ", (char *)"Blue       ", (char *)"           "
 };
 
 int sdaPins[] = {22, 23, 24, 25, 26, 27};
@@ -39,8 +39,8 @@ int scales[] = {1, 10, 10, 3, 3, 3, 3};
 int curPage = 1;
 bool oledChanges = true;
 
-State cur_state = State::Splash;
-State next_state = State::Splash;
+State cur_state = State::Update;
+State next_state = State::Update;
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -276,11 +276,12 @@ void loop()
   }
 
 //show splashscreen if console is disconnected
+/*
 if(!connected)
 {
  next_state = State::Splash;   
 }
-
+*/
 
   checkOSC();
 }
