@@ -16,7 +16,7 @@ private:
    int sensorValue;   
    float EMA_a;      
    float EMA_S;         
-   float previousValue;
+   int previousValue;
 };
 
 #endif

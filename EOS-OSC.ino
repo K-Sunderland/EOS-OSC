@@ -39,8 +39,8 @@ int scales[] = {1, 10, 10, 3, 3, 3, 3};
 int curPage = 1;
 bool oledChanges = true;
 
-State cur_state = State::Update;
-State next_state = State::Update;
+State cur_state = State::Splash;
+State next_state = State::Splash;
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,

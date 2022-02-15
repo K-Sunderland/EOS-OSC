@@ -117,7 +117,7 @@ void sendWheelMove(WHEEL_TYPE type, float ticks)
 
 void sendSubLevel(int subNum, float value)
 {
-    String subMsg = "/eos/sub";
+    String subMsg = "/eos/sub/";
     subMsg.concat(subNum);
 
     sendOscMessage(subMsg, value);
