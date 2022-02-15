@@ -113,6 +113,18 @@ void sendWheelMove(WHEEL_TYPE type, float ticks)
   sendOscMessage(wheelMsg, ticks);
 }
 
+
+
+void sendSubLevel(int subNum, float value)
+{
+    String subMsg = "/eos/sub";
+    subMsg.concat(subNum);
+
+    sendOscMessage(subMsg, value);
+}
+
+
+
 void checkOSC()
 {
   static String curMsg;
@@ -141,6 +153,7 @@ void checkOSC()
     if (diff > TIMEOUT_AFTER_IDLE_INTERVAL)
     {
       connectedToConsole = ConsoleNone;
+      connected = false;
       lastMessageRxTime = 0;
       timeoutPingSent = false;
     }

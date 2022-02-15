@@ -22,7 +22,7 @@ public:
     void initEncoder(uint8_t upinA, uint8_t upinB, uint8_t ubtnPin, uint8_t udirection, WHEEL_TYPE utype, uint8_t uscale);
     int8_t updateEncoder();
     WHEEL_TYPE getType();
-    bool updateSelector();
+    bool updateButton();
     void changeType(WHEEL_TYPE newType);
   
 

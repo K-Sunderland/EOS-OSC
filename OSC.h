@@ -28,6 +28,9 @@ void sendOscMessage(const String &address, float value);
 
 void sendWheelMove(WHEEL_TYPE type, float ticks);
 
+void sendSubLevel(int subNum, float value);
+
+
 void checkOSC();
 
 #endif

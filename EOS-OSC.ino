@@ -2,13 +2,18 @@
 #include "OLED.h"
 #include "Encoder.h"
 #include "OSC.h"
+#include "Submaster.h"
 #include <string.h>
-#define PAGE_NUM  2
+#define PAGE_NUM  3
+#define DISPLAY_NUM 6
+#define ENCODER_NUM 7
 #define SELECTOR_INDEX 0
 enum class State {Splash, Run, Switch, Update};
 
 OLED displays[6];
 Encoder encoders[7];
+Sub sub1;
+
 int val = 0;
 
 
@@ -20,8 +25,9 @@ WHEEL_TYPE type[PAGE_NUM][7] =
 
 char *typeText[PAGE_NUM][7] =
 {
-  {(char *)"", (char *)"Red    ", (char *)"Green   ", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},  
-  {(char *)"", (char *)"Tilt   ", (char *)"Zoom    ", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "}
+  {(char *)"", (char *)"Red    ", (char *)"Green   ", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},
+  {(char *)"", (char *)"Tilt   ", (char *)"Zoom    ", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "},
+  (char *)"", (char *)"Hello   ", (char *)"Poop    ", (char *)"Gay     ", (char *)"Blue       ", (char *)"           "
 };
 
 int sdaPins[] = {22, 23, 24, 25, 26, 27};
@@ -33,8 +39,8 @@ int scales[] = {1, 10, 10, 3, 3, 3, 3};
 int curPage = 1;
 bool oledChanges = true;
 
-State cur_state = State::Update;
-State next_state = State::Update;
+State cur_state = State::Splash;
+State next_state = State::Splash;
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -127,6 +133,7 @@ void setup()
   while (!Serial);
 #endif
 
+  sub1.init(A1);
   for (uint8_t i = 0; i < 6; i++)
   {
     displays[i].initOled(sdaPins[i]);
@@ -137,23 +144,39 @@ void setup()
 void splash()
 {
 
-
-if(connected)
-{
-  next_state = State::Update;
-}  
-else
-{
-
-
-  for(auto& disp : displays)
+  // clear splashscreen once connected 
+  if (connected)
   {
-   disp.displaySplash((uint8_t *)etcSplash);
-  }
-  
+    next_state = State::Update;
 
- 
-}
+    // shut displays off to hide timing delay
+    for(int i = 0; i < DISPLAY_NUM; i++)
+    {
+      displays[i].power(false);  
+    }
+
+    // clear display
+    for(int i = 0; i < DISPLAY_NUM; i++)
+    {
+     displays[i].clearDisplay(); 
+    }
+
+    // reenable power
+        for(int i = 0; i < DISPLAY_NUM; i++)
+    {
+      displays[i].power(true);  
+    }
+  }
+  else
+  {
+
+  // if not connected to console show splashscreen
+    for (auto& disp : displays)
+    {
+      disp.displaySplash((uint8_t *)etcSplash);
+    }
+
+  }
 
 }
 
@@ -161,15 +184,20 @@ else
 void run()
 {
 
+
+  sub1.updateSub();
+  
+  //send encoder data
   for (auto& enc : encoders)
   {
-    enc.updateEncoder();  
+    enc.updateEncoder();
   }
-    
-  displays[SELECTOR_INDEX].displayText((char*)"Running   ",2,2);
-  if(encoders[SELECTOR_INDEX].updateSelector())
+
+  // move to switching state if selector is pressed
+  if (encoders[SELECTOR_INDEX].updateButton())
   {
-    next_state = State::Switch;  
+    displays[SELECTOR_INDEX].displayText((char*)"Switching   ", 2, 2);
+    next_state = State::Switch;
   }
 }
 
@@ -178,39 +206,44 @@ int tmpPage;
 
 void switching()
 {
- 
-displays[SELECTOR_INDEX].displayText((char*)"Switching   ",2,2); 
 
-  if(!initSwitching)
+
+
+  if (!initSwitching)
   {
     tmpPage = curPage;
     initSwitching = true;
   }
+
+
+
+  int8_t motion = encoders[SELECTOR_INDEX].updateEncoder();
+
+
     
   
 
-  int8_t motion = encoders[SELECTOR_INDEX].updateEncoder();
-  tmpPage += motion; 
- 
-  
-  if (tmpPage > 1)
+  tmpPage += motion;
+
+
+  if (tmpPage >= PAGE_NUM)
     tmpPage = 0;
 
   if (tmpPage < 0)
-    tmpPage = 1;
+    tmpPage = PAGE_NUM - 1;
 
-
-
-for(uint8_t i = 0; i < 6; i++)
+  
+if(motion != 0)
+{
+  for(int i = 0; i < DISPLAY_NUM; i++)
   {
-    displays[i].displayText(typeText[tmpPage][i], 2,2);
+    displays[i].displayText(typeText[tmpPage][i], 2, 2);
   }
-  
- 
-  displays[SELECTOR_INDEX].displayText(convertToChar(curPage), 2,20);
-  
- if(encoders[SELECTOR_INDEX].updateSelector())
- {
+}
+
+
+  if (encoders[SELECTOR_INDEX].updateButton())
+  {
     initSwitching = false;
     curPage = tmpPage;
     next_state = State::Update;
@@ -220,13 +253,14 @@ for(uint8_t i = 0; i < 6; i++)
 void update()
 {
 
-  
-  for(uint8_t i = 0; i < 6; i++)
+
+  for (uint8_t i = 0; i < 6; i++)
   {
-    displays[i].displayText(typeText[curPage][i],2,2);
+    displays[i].displayText(typeText[curPage][i], 2, 2);
   }
 
   next_state = State::Run;
+  displays[SELECTOR_INDEX].displayText((char*)"Running   ", 2, 2);
 }
 
 
@@ -241,6 +275,11 @@ void loop()
     case State::Update: update(); break;
   }
 
+//show splashscreen if console is disconnected
+if(!connected)
+{
+ next_state = State::Splash;   
+}
 
 
   checkOSC();
