@@ -20,7 +20,7 @@ void Sub::updateSub()
 
   if(EMA_S != previousValue)
   {     
-     sendSubLevel(2, float(EMA_S)/1000);  
+     sendSubLevel(2, float(EMA_S)/1017);  
   }
 
 

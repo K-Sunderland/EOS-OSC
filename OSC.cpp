@@ -125,8 +125,8 @@ void sendSubLevel(int subNum, float value)
 
    
     
-    String subMsg = "/eos/fader/1/";
-    subMsg.concat(subNum);
+    String subMsg = "/eos/fader/1/2";
+   // subMsg.concat(subNum);
 
     sendOscMessage(subMsg, value);
 }
