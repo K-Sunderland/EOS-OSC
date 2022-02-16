@@ -15,8 +15,9 @@ private:
    uint8_t sensorPin;      
    int sensorValue;   
    float EMA_a;      
-   float EMA_S;         
+   int EMA_S;         
    int previousValue;
+
 };
 
 #endif

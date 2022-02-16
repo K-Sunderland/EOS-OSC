@@ -41,6 +41,8 @@ bool timeoutPingSent = false;
 void initSerial()
 {
     SLIPSerial.begin(115200);  
+  
+
 
 
 
@@ -56,6 +58,9 @@ void parseOSCMessage(String& msg)
     SLIPSerial.endPacket();
     connected = true;
     connectedToConsole = ConsoleEos;
+
+
+
   }
  
 
@@ -117,7 +122,10 @@ void sendWheelMove(WHEEL_TYPE type, float ticks)
 
 void sendSubLevel(int subNum, float value)
 {
-    String subMsg = "/eos/sub/";
+
+   
+    
+    String subMsg = "/eos/fader/1/";
     subMsg.concat(subNum);
 
     sendOscMessage(subMsg, value);

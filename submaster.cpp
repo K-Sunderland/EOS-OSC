@@ -14,16 +14,16 @@ void Sub::init(uint8_t upin)
 
 void Sub::updateSub()
 {
+  
   sensorValue = analogRead(sensorPin);                //read the sensor value using ADC
   EMA_S = (EMA_a * sensorValue) + ((1 - EMA_a) * EMA_S); //run the EMA
-    
-  if(EMA_S != previousValue)
-  {
-    
-     sendSubLevel(1, EMA_S/1023);  
 
- 
+  if(EMA_S != previousValue)
+  {     
+     sendSubLevel(2, float(EMA_S)/1000);  
   }
 
+
+  
   previousValue = EMA_S;
 }

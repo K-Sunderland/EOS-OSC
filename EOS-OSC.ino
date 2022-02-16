@@ -39,8 +39,8 @@ int scales[] = {1, 10, 10, 3, 3, 3, 3};
 int curPage = 1;
 bool oledChanges = true;
 
-State cur_state = State::Splash;
-State next_state = State::Splash;
+State cur_state = State::Update;
+State next_state = State::Update;
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -139,6 +139,9 @@ void setup()
     displays[i].initOled(sdaPins[i]);
     encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);
   }
+
+    
+     
 }
 
 void splash()
@@ -166,6 +169,8 @@ void splash()
     {
       displays[i].power(true);  
     }
+    String subInit = "/eos/fader/1/config/10";
+    sendOscMessage(subInit, 0);
   }
   else
   {
@@ -174,6 +179,7 @@ void splash()
     for (auto& disp : displays)
     {
       disp.displaySplash((uint8_t *)etcSplash);
+      
     }
 
   }
@@ -282,6 +288,6 @@ if(!connected)
  next_state = State::Splash;   
 }
 */
-
+   
   checkOSC();
 }
