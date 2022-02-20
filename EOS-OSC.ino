@@ -2,7 +2,8 @@
 #include "OLED.h"
 #include "Encoder.h"
 #include "OSC.h"
-#include "Submaster.h"
+#include "submaster.h"
+#include "button.h"
 #include <string.h>
 #define PAGE_NUM  3
 #define DISPLAY_NUM 6
@@ -13,6 +14,7 @@ enum class State {Splash, Run, Switch, Update};
 OLED displays[6];
 Encoder encoders[7];
 Sub sub1;
+Button btn1;
 
 int val = 0;
 
@@ -134,6 +136,8 @@ void setup()
 #endif
 
   sub1.init(A1);
+  btn1.init(2,BUMP_GO,1);
+  
   for (uint8_t i = 0; i < 6; i++)
   {
     displays[i].initOled(sdaPins[i]);
@@ -172,7 +176,7 @@ void splash()
 
     //initialize fader banks
     String subInit = "/eos/fader/1/config/10";
-    sendOscMessage(subInit, 0);
+    sendOscMessage(subInit);
   }
   else
   {
@@ -194,7 +198,7 @@ void run()
 
 
   sub1.updateSub();
-  
+  btn1.updateButton();
   //send encoder data
   for (auto& enc : encoders)
   {
@@ -283,13 +287,15 @@ void loop()
     case State::Update: update(); break;
   }
 
-//show splashscreen if console is disconnected
 
+
+//show splashscreen if console is disconnected
+/*
 if(!connected)
 {
  next_state = State::Splash;   
 }
-
+*/
    
   checkOSC();
 }

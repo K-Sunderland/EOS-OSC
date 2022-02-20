@@ -26,6 +26,8 @@ void parseOSCMessage(String& msg);
 
 void sendOscMessage(const String &address, float value);
 
+void sendOscMessage(const String &address);
+
 void sendWheelMove(WHEEL_TYPE type, float ticks);
 
 void sendSubLevel(int subNum, float value);

@@ -75,6 +75,16 @@ void sendOscMessage(const String &address, float value)
   SLIPSerial.endPacket();
 }
 
+void sendOscMessage(const String &address)
+{
+  OSCMessage msg(address.c_str());
+  SLIPSerial.beginPacket();
+  msg.send(SLIPSerial);
+  SLIPSerial.endPacket();
+}
+
+
+
 
 void sendWheelMove(WHEEL_TYPE type, float ticks)
 {
@@ -123,12 +133,10 @@ void sendWheelMove(WHEEL_TYPE type, float ticks)
 void sendSubLevel(int subNum, float value)
 {
 
-   
-    
     String subMsg = "/eos/fader/1/2";
    // subMsg.concat(subNum);
-
     sendOscMessage(subMsg, value);
+
 }
 
 
