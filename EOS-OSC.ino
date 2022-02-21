@@ -47,7 +47,7 @@ WHEEL_TYPE type[PAGE_NUM][7] =
 
 int encoderAPins[] = {30, 32, 34, 36, 38, 40, 42};
 int encoderBPins[] = {31, 33, 35, 37, 39, 41, 43};
-int btnPins[] = {44, 45, 46, 47, 48, -1};
+int encBtnPins[] = {44, 45, 46, 47, 48, -1};
 int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
 
 int scales[PAGE_NUM][7] =
@@ -69,7 +69,10 @@ int curPage = 1;
 State cur_state = State::Splash;
 State next_state = State::Splash;
 
-
+//button init values 
+int btnPins[] = {2,3,4,5,6,7,8,9,10,11};
+int btnTypes[] = {BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK};
+int btnNums[] = {1,1,2,2,3,3,4,4,5,5};
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -172,7 +175,7 @@ void setup()
 
   for (uint8_t i = 0; i < ENCODER_NUM; i++)
   {
-    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], encBtnPins[i], directions[i], type[curPage][i], scales[i]);
   }
 
   for (uint8_t i = 0; i < FADER_NUM; i++)
@@ -180,6 +183,11 @@ void setup()
     faders[i].init(faderPins[i], faderTypes[i], faderNums[i]);
   }
 
+  for (uint8_t i = 0; i < BUTTON_NUM; i++)
+  {
+    buttons[i].init(btnPins[i], btnTypes[i], btnNums[i]);
+    
+  }
  
 }
 
@@ -245,6 +253,11 @@ void run()
   for (auto& fader : faders)
   {
     fader.updateSub();  
+  }
+
+  for (auto& btn : buttons)
+  {
+    btn.updateButton();  
   }
 
   // move to switching state if selector is pressed
@@ -338,14 +351,14 @@ void loop()
   }
 
 
-
+/*
   //show splashscreen if console is disconnected
     if(!connected)
     {
     next_state = State::Splash;
     splashed = false;
     }
-  
+*/
 
   checkOSC();
 }

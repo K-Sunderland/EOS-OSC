@@ -20,7 +20,7 @@ faderNum = ufaderNum;
 void Button::updateButton()
 {
  bool state; 
- int curValue = digitalRead(2);
+ int curValue = digitalRead(pin);
 
     if(curValue != previous && curValue == 0)
     {
@@ -40,11 +40,14 @@ previous = curValue;
     switch(type)
     {
       case BUMP_GO:
-          msg.concat("/eos/fader/1/2/fire");
+          msg.concat("/eos/fader/1/");
+          msg.concat(faderNum);
+          msg.concat("/fire");
       break;
       case BUMP_BACK:
-          msg.concat("/eos/fader/1/2/stop");
-          sendOscMessage(msg);
+          msg.concat("/eos/fader/1/");
+          msg.concat(faderNum);
+          msg.concat("/stop");
       break;
       case BLACKOUT:
 
@@ -60,7 +63,8 @@ previous = curValue;
       break;
       
     }
-     
+      sendOscMessage(msg);
+      msg = "";
    }
   
 }

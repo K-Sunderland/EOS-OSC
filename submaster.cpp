@@ -23,10 +23,11 @@ void Sub::updateSub()
   
   sensorValue = analogRead(sensorPin);                //read the sensor value using ADC
   EMA_S = (EMA_a * sensorValue) + ((1 - EMA_a) * EMA_S); //run the EMA
-
+  float value = float(EMA_S)/1005;
+  value = floorf(value * 100) / 100;
   if(EMA_S != previousValue)
-  {  
- 
+  {
+   
     //add paging ability in future
     switch(type)
     {
@@ -35,7 +36,7 @@ void Sub::updateSub()
       {
       String faderMsg("/eos/fader/1/"); 
       faderMsg.concat(faderNum);
-      sendOscMessage(faderMsg, float(EMA_S)/1019); 
+     sendOscMessage(faderMsg,value); 
       }
       break;
       
@@ -43,7 +44,5 @@ void Sub::updateSub()
  
   }
 
-
-  
   previousValue = EMA_S;
 }
