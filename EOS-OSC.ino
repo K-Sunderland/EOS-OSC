@@ -8,41 +8,73 @@
 #define PAGE_NUM  3
 #define DISPLAY_NUM 6
 #define ENCODER_NUM 7
+
+//update these later
+#define FADER_NUM 10
+#define BUTTON_NUM 10
+
+
 #define SELECTOR_INDEX 0
+
 enum class State {Splash, Run, Switch, Update};
 
-OLED displays[6];
-Encoder encoders[7];
-Sub sub1;
-Button btn1;
+OLED displays[DISPLAY_NUM];
+Encoder encoders[ENCODER_NUM];
+Sub faders[FADER_NUM]
+Button buttons[BUTTON_NUM]
 
 int val = 0;
 
 
+//displays init values
+int sdaPins[] = {22, 23, 24, 25, 26, 27};
+
+
+char *typeText[PAGE_NUM][6] =
+{
+  {(char *)"", (char *)"Red    ", (char *)"Green  ", (char *)"Blue   ", (char *)"White  ", (char *)"Amber  "},
+  {(char *)"", (char *)"Pan    ", (char *)"Tilt   ", (char *)"Pan    ", (char *)"Blue   ", (char *)"       "}
+};
+
+
+
+//encoder init values
 WHEEL_TYPE type[PAGE_NUM][7] =
 {
   {SELECTOR, RED, GREEN, BLUE, WHITE, AMBER, LEVEL},
-  {SELECTOR, TILT, ZOOM, PAN, BLUE, BLUE, LEVEL}
+  {SELECTOR, PAN, TILT, ZOOM, BLUE, BLUE, LEVEL},
 };
 
-char *typeText[PAGE_NUM][7] =
-{
-  {(char *)"", (char *)"Red    ", (char *)"Green", (char *)"Blue    ", (char *)"White      ", (char *)"Amber      "},
-  {(char *)"", (char *)"Tilt   ", (char *)"Zoom", (char *)"Pan     ", (char *)"Blue       ", (char *)"           "},
-  (char *)"", (char *)"Hello   ", (char *)"Purple    ", (char *)"Red     ", (char *)"Blue       ", (char *)"           "
-};
-
-int sdaPins[] = {22, 23, 24, 25, 26, 27};
 int encoderAPins[] = {30, 32, 34, 36, 38, 40, 42};
 int encoderBPins[] = {31, 33, 35, 37, 39, 41, 43};
 int btnPins[] = {44, 45, 46, 47, 48, -1};
 int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
-int scales[] = {1, 10, 10, 3, 3, 3, 3};
+
+int scales[PAGE_NUM][7] = 
+{
+  {1, 3, 3, 3, 3, 3, 1},
+  {1, 10, 10, 3, 3, 1}
+  
+}
+
+
+//display text banks
+char *typeText[PAGE_NUM][6] =
+{
+  {(char *)"", (char *)"Red    ", (char *)"Green  ", (char *)"Blue   ", (char *)"White  ", (char *)"Amber  "},
+  {(char *)"", (char *)"Pan    ", (char *)"Tilt   ", (char *)"Pan    ", (char *)"Blue   ", (char *)"       "}
+};
+
+//fader init values
+int faderPins[] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13};
+int faderTypes[] = {GRANDMASTER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, MASTER_LEFT, MASTER_RIGHT};
+
 int curPage = 1;
-bool oledChanges = true;
 
 State cur_state = State::Splash;
 State next_state = State::Splash;
+
+
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -135,15 +167,23 @@ void setup()
   while (!Serial);
 #endif
 
-  sub1.init(A1);
-  btn1.init(2,BUMP_GO,1);
+
   
-  for (uint8_t i = 0; i < 6; i++)
+  for (uint8_t i = 0; i < DISPLAY_NUM; i++)
   {
     displays[i].initOled(sdaPins[i]);
-    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);
+
   }
 
+  for (uint8_t i = 0; i < ENCODER_NUM; i++)
+  {
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);  
+  }
+
+  for (uint8_t i = 0; i < FADER_NUM; i++)
+  {
+    faders[i].init(faderNum)
+  }
     
      
 }
@@ -188,7 +228,6 @@ void splash()
       
     }
 
-  }
 
 }
 
@@ -199,6 +238,7 @@ void run()
 
   sub1.updateSub();
   btn1.updateButton();
+  btn2.updateButton();
   //send encoder data
   for (auto& enc : encoders)
   {
@@ -270,6 +310,13 @@ void update()
   {
     displays[i].displayText(typeText[curPage][i], 2, 2);
   }
+
+  for (uint8_t i = 0; i < ENCODER_NUM; i++)
+  {
+    encoders[i].changeType(types[curPage][i], scales[curPage][i]);  
+  }
+    
+}
 
   next_state = State::Run;
   displays[SELECTOR_INDEX].displayText((char*)"Running   ", 2, 2);

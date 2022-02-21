@@ -130,14 +130,7 @@ void sendWheelMove(WHEEL_TYPE type, float ticks)
 
 
 
-void sendSubLevel(int subNum, float value)
-{
 
-    String subMsg = "/eos/fader/1/2";
-   // subMsg.concat(subNum);
-    sendOscMessage(subMsg, value);
-
-}
 
 
 

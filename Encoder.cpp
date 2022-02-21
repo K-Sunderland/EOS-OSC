@@ -84,7 +84,9 @@ bool Encoder::updateButton()
     return state;
 }
 
-void Encoder::changeType(WHEEL_TYPE newType)
+
+void Encoder::changeType(WHEEL_TYPE newType, int newScale)
 {
     type = newType;
+    scale = newScale
 }

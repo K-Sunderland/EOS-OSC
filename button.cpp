@@ -36,15 +36,15 @@ void Button::updateButton()
 previous = curValue;
    if(state)
    {
-    
+    String msg("");
     switch(type)
     {
       case BUMP_GO:
-          String msg("/eos/fader/1/2/fire");
-          sendOscMessage(msg);
+          msg.concat("/eos/fader/1/2/fire");
       break;
       case BUMP_BACK:
-
+          msg.concat("/eos/fader/1/2/stop");
+          sendOscMessage(msg);
       break;
       case BLACKOUT:
 

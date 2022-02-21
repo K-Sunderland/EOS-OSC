@@ -23,7 +23,7 @@ public:
     int8_t updateEncoder();
     WHEEL_TYPE getType();
     bool updateButton();
-    void changeType(WHEEL_TYPE newType);
+    void changeType(WHEEL_TYPE newType, int scale);
   
 
 private:
