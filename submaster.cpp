@@ -26,16 +26,17 @@ void Sub::updateSub()
 
   if(EMA_S != previousValue)
   {  
-   float value = float(EMA_S/1017);
+ 
     //add paging ability in future
     switch(type)
     {
       case FADER:
-      
+      if(faderNum != 5)
+      {
       String faderMsg("/eos/fader/1/"); 
       faderMsg.concat(faderNum);
-      sendOscMessage(faderMsg, value); 
-      
+      sendOscMessage(faderMsg, float(EMA_S)/1019); 
+      }
       break;
       
     }

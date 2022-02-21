@@ -10,7 +10,7 @@
 #define ENCODER_NUM 7
 
 //update these later
-#define FADER_NUM 10
+#define FADER_NUM 11
 #define BUTTON_NUM 10
 
 
@@ -20,8 +20,8 @@ enum class State {Splash, Run, Switch, Update};
 
 OLED displays[DISPLAY_NUM];
 Encoder encoders[ENCODER_NUM];
-Sub faders[FADER_NUM]
-Button buttons[BUTTON_NUM]
+Sub faders[FADER_NUM];
+Button buttons[BUTTON_NUM];
 
 int val = 0;
 
@@ -50,24 +50,19 @@ int encoderBPins[] = {31, 33, 35, 37, 39, 41, 43};
 int btnPins[] = {44, 45, 46, 47, 48, -1};
 int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
 
-int scales[PAGE_NUM][7] = 
+int scales[PAGE_NUM][7] =
 {
   {1, 3, 3, 3, 3, 3, 1},
   {1, 10, 10, 3, 3, 1}
-  
-}
 
-
-//display text banks
-char *typeText[PAGE_NUM][6] =
-{
-  {(char *)"", (char *)"Red    ", (char *)"Green  ", (char *)"Blue   ", (char *)"White  ", (char *)"Amber  "},
-  {(char *)"", (char *)"Pan    ", (char *)"Tilt   ", (char *)"Pan    ", (char *)"Blue   ", (char *)"       "}
 };
 
+
+
 //fader init values
-int faderPins[] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13};
+int faderPins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12};
 int faderTypes[] = {GRANDMASTER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, FADER, MASTER_LEFT, MASTER_RIGHT};
+int faderNums[] = { -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2};
 
 int curPage = 1;
 
@@ -168,7 +163,7 @@ void setup()
 #endif
 
 
-  
+
   for (uint8_t i = 0; i < DISPLAY_NUM; i++)
   {
     displays[i].initOled(sdaPins[i]);
@@ -177,41 +172,42 @@ void setup()
 
   for (uint8_t i = 0; i < ENCODER_NUM; i++)
   {
-    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);  
+    encoders[i].initEncoder(encoderAPins[i], encoderBPins[i], btnPins[i], directions[i], type[curPage][i], scales[i]);
   }
 
   for (uint8_t i = 0; i < FADER_NUM; i++)
   {
-    faders[i].init(faderNum)
+    faders[i].init(faderPins[i], faderTypes[i], faderNums[i]);
   }
-    
-     
+
+ 
 }
 
+bool splashed = false;
 void splash()
 {
-
-  // clear splashscreen once connected 
+ 
+  // clear splashscreen once connected
   if (connected)
   {
     next_state = State::Update;
 
     // shut displays off to hide timing delay
-    for(int i = 0; i < DISPLAY_NUM; i++)
+    for (int i = 0; i < DISPLAY_NUM; i++)
     {
-      displays[i].power(false);  
+      displays[i].power(false);
     }
 
     // clear display
-    for(int i = 0; i < DISPLAY_NUM; i++)
+    for (int i = 0; i < DISPLAY_NUM; i++)
     {
-     displays[i].clearDisplay(); 
+      displays[i].clearDisplay();
     }
 
     // reenable power
-        for(int i = 0; i < DISPLAY_NUM; i++)
+    for (int i = 0; i < DISPLAY_NUM; i++)
     {
-      displays[i].power(true);  
+      displays[i].power(true);
     }
 
     //initialize fader banks
@@ -221,28 +217,34 @@ void splash()
   else
   {
 
-  // if not connected to console show splashscreen
+      if (!splashed)
+  {
+    // if not connected to console show splashscreen
     for (auto& disp : displays)
     {
       disp.displaySplash((uint8_t *)etcSplash);
-      
+    splashed = true;
     }
+  }
 
+  }
 
 }
-
 
 void run()
 {
 
 
-  sub1.updateSub();
-  btn1.updateButton();
-  btn2.updateButton();
+
   //send encoder data
   for (auto& enc : encoders)
   {
     enc.updateEncoder();
+  }
+
+  for (auto& fader : faders)
+  {
+    fader.updateSub();  
   }
 
   // move to switching state if selector is pressed
@@ -272,8 +274,8 @@ void switching()
   int8_t motion = encoders[SELECTOR_INDEX].updateEncoder();
 
 
-    
-  
+
+
 
   tmpPage += motion;
 
@@ -284,14 +286,14 @@ void switching()
   if (tmpPage < 0)
     tmpPage = PAGE_NUM - 1;
 
-  
-if(motion != 0)
-{
-  for(int i = 0; i < DISPLAY_NUM; i++)
+
+  if (motion != 0)
   {
-    displays[i].displayText(typeText[tmpPage][i], 2, 2);
+    for (int i = 0; i < DISPLAY_NUM; i++)
+    {
+      displays[i].displayText(typeText[tmpPage][i], 2, 2);
+    }
   }
-}
 
 
   if (encoders[SELECTOR_INDEX].updateButton())
@@ -306,20 +308,21 @@ void update()
 {
 
 
-  for (uint8_t i = 0; i < 6; i++)
+  for (uint8_t i = 0; i < DISPLAY_NUM; i++)
   {
     displays[i].displayText(typeText[curPage][i], 2, 2);
   }
 
   for (uint8_t i = 0; i < ENCODER_NUM; i++)
   {
-    encoders[i].changeType(types[curPage][i], scales[curPage][i]);  
+    encoders[i].changeType(type[curPage][i], scales[curPage][i]);
   }
-    
-}
 
-  next_state = State::Run;
-  displays[SELECTOR_INDEX].displayText((char*)"Running   ", 2, 2);
+
+
+
+next_state = State::Run;
+displays[SELECTOR_INDEX].displayText((char*)"Running   ", 2, 2);
 }
 
 
@@ -336,13 +339,13 @@ void loop()
 
 
 
-//show splashscreen if console is disconnected
-/*
-if(!connected)
-{
- next_state = State::Splash;   
-}
-*/
-   
+  //show splashscreen if console is disconnected
+    if(!connected)
+    {
+    next_state = State::Splash;
+    splashed = false;
+    }
+  
+
   checkOSC();
 }
