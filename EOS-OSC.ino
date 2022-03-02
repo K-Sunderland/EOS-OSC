@@ -45,9 +45,9 @@ WHEEL_TYPE type[PAGE_NUM][7] =
   {SELECTOR, PAN, TILT, ZOOM, BLUE, BLUE, LEVEL},
 };
 
-int encoderAPins[] = {30, 32, 34, 36, 38, 40, 42};
-int encoderBPins[] = {31, 33, 35, 37, 39, 41, 43};
-int encBtnPins[] = {44, 45, 46, 47, 48, -1};
+int encoderAPins[] = {28, 30, 32, 34, 36, 38, 40};
+int encoderBPins[] = {29, 31, 33, 35, 37, 39, 41};
+int encBtnPins[] = {42, 45, 46, 47, 48, -1};
 int directions[] = {FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD};
 
 int scales[PAGE_NUM][7] =
@@ -71,10 +71,10 @@ State next_state = State::Splash;
 
 //button init values 
 int btnPins[] = {2,3,4,5,6,7,8,9,10,11};
-int btnTypes[] = {BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK};
-int btnNums[] = {1,1,2,2,3,3,4,4,5,5};
+int btnTypes[] = {FADER_PAGE, FADER_PAGE, FADER_PAGE, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK};
+int btnNums[] = {1,2,3,2,3,3,4,4,5,5};
 
-int ledPins[];
+int ledPins[] = {45,46,47};
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -188,7 +188,7 @@ void setup()
 
   for (uint8_t i = 0; i < BUTTON_NUM; i++)
   {
-    buttons[i].init(btnPins[i], btnTypes[i], btnNums[i]);
+    buttons[i].init(btnPins[i], btnTypes[i], btnNums[i], ledPins[i]);
     
   }
  
@@ -222,8 +222,9 @@ void splash()
     }
 
     //initialize fader banks
-    String subInit = "/eos/fader/1/config/10";
-    sendOscMessage(subInit);
+    sendOscMessage("/eos/fader/1/config/10");
+    sendOscMessage("/eos/fader/2/config/10");
+    sendOscMessage("/eos/fader/3/config/10");
   }
   else
   {
@@ -261,6 +262,7 @@ void run()
   for (auto& btn : buttons)
   {
     btn.updateButton();  
+    btn.updateLed();
   }
 
   // move to switching state if selector is pressed

@@ -37,7 +37,7 @@ void Sub::updateSub()
       {
       String faderMsg("/eos/fader/"); 
       faderMsg.concat(faderPage);
-      faderMsg.concat("/")
+      faderMsg.concat("/");
       faderMsg.concat(faderNum);
      sendOscMessage(faderMsg,value); 
       }

@@ -1,8 +1,9 @@
 #include "button.h"
 #include "OSC.h"
+#include "submaster.h"
 #include <string.h>
 
-void Button::init(uint8_t upin, buttonType utype, uint8_t ufaderNum = -1, int ufaderPage = -1)
+void Button::init(uint8_t upin, buttonType utype, uint8_t ufaderNum = -1, uint8_t uledPin = -1)
 {
 
 pin = upin; 
@@ -14,9 +15,15 @@ previous = digitalRead(pin);
 
 faderNum = ufaderNum;
 
-faderPage = ufaderPage;
 
-ledNum = uledNum;
+ledPin = uledPin;
+
+if (ledPin != -1)
+{
+ pinMode(ledPin, OUTPUT);
+ digitalWrite(ledPin, LOW);  
+}
+
 }
 
 
@@ -64,12 +71,26 @@ previous = curValue;
 
       break;
       case FADER_PAGE:
-          faderPage = pageNum;
+          faderPage = faderNum;
       break;
       
     }
       sendOscMessage(msg);
       msg = "";
    }
+  
+}
+
+
+void Button::updateLed()
+{
+if(faderNum == faderPage)
+{
+ digitalWrite(ledPin, HIGH);
+}  
+else
+{
+  digitalWrite(ledPin, LOW);  
+}
   
 }
