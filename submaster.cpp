@@ -1,6 +1,7 @@
 #include "submaster.h"
 #include "OSC.h" 
 
+int faderPage = 1;
 void Sub::init(uint8_t upin, faderType utype, uint8_t ufaderNum = -1)
 {
   sensorPin = upin;
@@ -34,7 +35,9 @@ void Sub::updateSub()
       case FADER:
       if(faderNum != 5)
       {
-      String faderMsg("/eos/fader/1/"); 
+      String faderMsg("/eos/fader/"); 
+      faderMsg.concat(faderPage);
+      faderMsg.concat("/")
       faderMsg.concat(faderNum);
      sendOscMessage(faderMsg,value); 
       }

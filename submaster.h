@@ -25,4 +25,6 @@ private:
 
 };
 
+extern int faderPage; 
+
 #endif

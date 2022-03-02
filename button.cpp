@@ -2,7 +2,7 @@
 #include "OSC.h"
 #include <string.h>
 
-void Button::init(uint8_t upin, buttonType utype, uint8_t ufaderNum = -1)
+void Button::init(uint8_t upin, buttonType utype, uint8_t ufaderNum = -1, int ufaderPage = -1)
 {
 
 pin = upin; 
@@ -14,6 +14,9 @@ previous = digitalRead(pin);
 
 faderNum = ufaderNum;
 
+faderPage = ufaderPage;
+
+ledNum = uledNum;
 }
 
 
@@ -34,6 +37,7 @@ void Button::updateButton()
     
   
 previous = curValue;
+// if button is pressed 
    if(state)
    {
     String msg("");
@@ -49,10 +53,8 @@ previous = curValue;
           msg.concat(faderNum);
           msg.concat("/stop");
       break;
-      case BLACKOUT:
 
-      break;
-      case LOAD:
+      case MASTER_LOAD:
 
       break;
       case MASTER_GO:
@@ -60,6 +62,9 @@ previous = curValue;
       break;
       case MASTER_BACK:
 
+      break;
+      case FADER_PAGE:
+          faderPage = pageNum;
       break;
       
     }

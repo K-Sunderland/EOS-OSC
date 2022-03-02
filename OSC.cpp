@@ -41,12 +41,21 @@ bool timeoutPingSent = false;
 void initSerial()
 {
     SLIPSerial.begin(115200);  
-  
-
-
-
-
+ 
 }
+
+
+void issueFilters()
+{
+  OSCMessage filter("/eos/filter/add");
+  filter.add("/eos/out/fader*");
+  filter.add("/eos/out/ping");
+  SLIPSerial.beginPacket();
+  filter.send(SLIPSerial);
+  SLIPSerial.endPacket();  
+}
+
+
 void parseOSCMessage(String& msg)
 {
   // check to see if this is the handshake string

@@ -12,7 +12,7 @@
 //update these later
 #define FADER_NUM 11
 #define BUTTON_NUM 10
-
+#define LED_NUM  5
 
 #define SELECTOR_INDEX 0
 
@@ -73,6 +73,8 @@ State next_state = State::Splash;
 int btnPins[] = {2,3,4,5,6,7,8,9,10,11};
 int btnTypes[] = {BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK, BUMP_GO, BUMP_BACK};
 int btnNums[] = {1,1,2,2,3,3,4,4,5,5};
+
+int ledPins[];
 
 const uint8_t etcSplash[] PROGMEM = {
   0x42, 0x4d, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0x28, 0x00,
@@ -157,6 +159,7 @@ void setup()
 {
 
   initSerial();
+  issueFilters();
   // This is a hack around an Arduino bug. It was taken from the OSC library
   //examples
 #ifdef BOARD_HAS_USB_SERIAL
@@ -225,7 +228,7 @@ void splash()
   else
   {
 
-      if (!splashed)
+      if (!splashed && !connected)
   {
     // if not connected to console show splashscreen
     for (auto& disp : displays)
@@ -353,10 +356,10 @@ void loop()
 
 /*
   //show splashscreen if console is disconnected
-    if(!connected)
+    if(!connected && cur_state != State::Splash)
     {
-    next_state = State::Splash;
-    splashed = false;
+      next_state = State::Splash;
+      splashed = false;
     }
 */
 
